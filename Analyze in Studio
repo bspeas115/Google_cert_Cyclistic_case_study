@@ -1,4 +1,4 @@
-#----------------------------- General Bike Data -----------------------------
+# ----------------------------- General Bike Data -----------------------------
   #Compare Members and casual users
     clean_data%>% group_by(member_casual)%>% summarise(n=n))%>% mutate(percent = n*100/sum(n))
   
@@ -10,7 +10,8 @@
     cat('Maximum length of rides is: ', round(max(clean_data$ride_length)/60/24), "days."
 
 
-#----------------------------- Ride Length Data -----------------------------
+
+# ----------------------------- Ride Length Data -----------------------------
   #Calculate average ride length of members and casual riders
     length <- clean_data%>% group_by(member_casual)%>% summarise(avg_ride_length=mean(ride_length))
   
@@ -19,7 +20,7 @@
   
   
 
-#----------------------------- Different Types of Bike Data -----------------------------
+# ----------------------------- Different Types of Bike Data -----------------------------
   #Calculate the usage of the three different types of bikes: Classic, docked and electric
     clean-data%>% group_by(rideable_type) %>% summarise(n=n())%>% mutate(percent = n*100/sum(n))
   
@@ -34,7 +35,7 @@
   
   
 
-#----------------------------- Days of the Week Bike Data -----------------------------
+# ----------------------------- Days of the Week Bike Data -----------------------------
   #Calculate the Usage of Bikes by Days of the Week
     clean_data$weekday <- factor(clean_data$weekday, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
     week <- clean_data%>% group_by (weekday)%>% summarise(n=n())%>% mutate(percent = n*100/sum(n))
@@ -46,3 +47,18 @@
   
   #Plot Daily Usage of Bikes of Members and Casual Riders
     ggplot(data = clean_data,mapping = aes(x= weekday,fill=member_casual)) +geom_bar() + facet_wrap(member_casual)+ labs(title = "Daily Bike Usage by Users")
+
+
+
+# ----------------------------- Top 10 Start Station Bike Data -----------------------------
+  # Calculate the Top 10 Start Station for Members
+    start_data <- clean_data %>% group_by(start_station_name, member_casual) %>% summarise(number_of_trips=n()) %>% arrange(desc (number_of_trips)) %>% filter(member_casual== "member", number_of_trips >= 15460) %>% select(start_station_name, number_of_trips) %>%
+  
+  #Plot the Top 10 Start Station for Members
+    ggplot(aes(x=start_station_name, y=number_of_trips)) + coord_flip() + labs(title="Top 10 Start Stations for Members", x="Start station", y="Number of trips")
+
+ # Calculate the Top 10 Start Station for Casual users
+    start_data <- clean_data %>% group_by(start_station_name, member_casual) %>% summarise(number_of_trips=n()) %>% arrange(desc (number_of_trips)) %>% filter(member_casual== "casual", number_of_trips >= 15460) %>% select(start_station_name, number_of_trips) %>%
+  
+  #Plot the Top 10 Start Station for Casual users
+    ggplot(aes(x=start_station_name, y=number_of_trips)) + coord_flip() + labs(title="Top 10 Start Stations for Casual Users", x="Start station name", y="Number of trips")
