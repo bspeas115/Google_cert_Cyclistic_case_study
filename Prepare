@@ -1,0 +1,87 @@
+#install  and load packages
+  library(ggplot2)
+  library(dplyr)
+  library(tidyverse)
+
+
+#import all files and assign them to their respective months
+  jan <- read.csv("~/Downloads/202012-divvy-tripdata.csv")
+  feb <- read.csv("~/Downloads/202101-divvy-tripdata.csv")
+  mar <- read.csv("~/Downloads/202102-divvy-tripdata.csv")
+  apr <- read.csv("~/Downloads/202103-divvy-tripdata.csv")
+  may <- read.csv("~/Downloads/202104-divvy-tripdata.csv")
+  jun <- read.csv("~/Downloads/202105-divvy-tripdata.csv")
+  jul <- read.csv("~/Downloads/202106-divvy-tripdata.csv")
+  aug <- read.csv("~/Downloads/202107-divvy-tripdata.csv")
+  sep <- read.csv("~/Downloads/202108-divvy-tripdata.csv")
+  oct <- read.csv("~/Downloads/202109-divvy-tripdata.csv")
+  nov <- read.csv("~/Downloads/202110-divvy-tripdata.csv")
+  dec <- read.csv("~/Downloads/202111-divvy-tripdata.csv")
+
+
+#Check to see if the datatypes are consistent in each of the months
+  compare_df_cols(jan,feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec,return = "mismatch")
+
+
+#Merge all data into a singular data frame
+  triprawdata <- rbind(jan,feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec)
+
+
+#Get the summary of the data
+  summary(triprawdata)
+
+
+#remove rows with null values
+  triprawdata <- na.omit(triprawdata)
+
+
+#Add a column for ride length
+  ride_length <- difftime(end_time[,], start_time[,], units = "mins"
+  ride_length <- data.frame(ride_length)
+  triprawdata <- cbind(triprawdata, ride_length)
+
+
+#Check for consistency of Ride_ID and Ride_length
+  clean_data <- triprawdata%>% filter(ride_length>0)
+  sum(duplicated(clean_data$ride_id))
+
+
+#Make the data format consistent in started_at and end_at
+  start<-as.POSIXlt(triprawdata$started_at, tz = "","%m/%d/%Y %H:%M")
+  start<- data.frame(start)
+  start<- (start[1:nrow(na.omit(start)),])
+  start<- data.frame(start)
+
+  start1<-as.POSIXlt(triprawdata$started_at, tz = "","%Y-%m-%d %H:%M")
+  start1<- data.frame(start1)
+  start1<- (start1[(nrow(start)+1):nrow(start1),])
+  start1<-data.frame(start1)
+  
+  names(start)<- "start"
+  names(start1)<- "start"
+  start_time<- (rbind(start,start1))
+  triprawdata$started_at <- NULL
+  triprawdata['started_at']<- start_time
+  
+  end<-(as.POSIXlt(triprawdata$ended_at, tz = "","%m/%d/%Y %H:%M"))
+  end<- data.frame(end)
+  end<- (end[1:nrow(na.omit(end)),])
+  end<-data.frame(end)
+
+  end1<-(as.POSIXlt(triprawdata$ended_at, tz = "","%Y-%m-%d %H:%M"))
+  end1<- data.frame(end1)
+  end1<- (end1[(nrow(end)+1):nrow(end1),])
+  end1<-data.frame(end1)
+  
+  names(end)<- "end"
+  names(end1)<- "end"
+  end_time<- (rbind(end,end1))
+  triprawdata$ended_at<- NULL
+  triprawdata['ended_at']<- end_time
+
+#add columns for the days of the week
+  weekday<- weekdays(clean_data$started_at)
+  weekday<-  factor(weekday, levels =c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday")) 
+  weekday<- data.frame(weekday)
+  clean_data<- cbind(clean_data,weekday)
+
