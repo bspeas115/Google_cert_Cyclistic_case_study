@@ -1,3 +1,5 @@
+#----------------------------- General Bike Data -----------------------------
+
 #Compare Members and casual users
   clean_data%>% group_by(member_casual)%>% summarise(n=n))%>% mutate(percent = n*100/sum(n))
 
