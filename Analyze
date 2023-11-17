@@ -1,0 +1,39 @@
+#Compare Members and casual users
+  clean_data%>% group_by(member_casual)%>% summarise(n=n))%>% mutate(percent = n*100/sum(n))
+
+#Plot members vs. casual
+  ggplot(data = clean_data,mapping = aes(x= member_casual)) +geom_bar() + labs(title = "Member vs Casual Riders")
+
+#Calculate the average and maximum duration of rides
+  cat('Average length of rides is: ', mean(clean_data$ride_length), "minutes."
+  cat('Maximum length of rides is: ', round(max(clean_data$ride_length)/60/24), "days."
+
+#Calculate average ride length of members and casual riders
+  length <- clean_data%>% group_by(member_casual)%>% summarise(avg_ride_length=mean(ride_length))
+
+#Plot average ride length of members and casual riders
+  ggplot(length, aes(x= member_casual, y = avg_ride_length, fill = member_casual)) +geom_col() + labs(title = "Average Ride Length of Riders")
+
+#Calculate the usage of the three different types of bikes: Classic, docked and electric
+  clean-data%>% group_by(rideable_type) %>% summarise(n=n())%>% mutate(percent = n*100/sum(n))
+
+#Plot the usage of the three different types of bikes: Classic, docked and electric
+  ggplot(data = clean_data,mapping = aes(x= rideable_type,fill=rideable_type)) +geom_bar() + labs(title = "Types of Bikes Usage")
+
+#Calculate Types of bike usage amongst casual users and members
+  rideable_type <- clean_data%>% group_by(rideable_type, member_casual)%>%summarise(n=n())%>% mutate(percent = n*100/sum(n))
+
+#Plot the Types of bike usage amongst casual users and members
+  ggplot(data = as.data.frame(rideable_type),mapping= aes(x= rideable_type, y = n, fill =member_casual)) +geom_bar(stat = 'identity') + labs(title="Usage of Bike Types by Users")
+
+#Calculate the Usage of Bikes by Days of the Week
+  clean_data$weekday <- factor(clean_data$weekday, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+  week <- clean_data%>% group_by (weekday)%>% summarise(n=n())%>% mutate(percent = n*100/sum(n))
+
+#Plot the Usage of Bikes by Days of the Week
+  ggplot(data = clean_data,mapping = aes(x= weekday)) +geom_bar() + labs(title = "Daily Bike Usage")
+
+#Calculate Daily Usage of Bikes of Members and Casual Riders
+
+#Plot Daily Usage of Bikes of Members and Casual Riders
+  ggplot(data = clean_data,mapping = aes(x= weekday,fill=member_casual)) +geom_bar() + facet_wrap(member_casual)+ labs(title = "Daily Bike Usage by Users")
