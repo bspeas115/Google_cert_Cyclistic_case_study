@@ -1,6 +1,7 @@
 #Compare Members and casual users
   clean_data%>% group_by(member_casual)%>% summarise(n=n))%>% mutate(percent = n*100/sum(n))
 
+
 #Plot members vs. casual
   ggplot(data = clean_data,mapping = aes(x= member_casual)) +geom_bar() + labs(title = "Member vs Casual Riders")
 
